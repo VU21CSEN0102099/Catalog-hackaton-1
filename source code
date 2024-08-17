@@ -1,0 +1,124 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class EWasteItem {
+    String name;
+    String category;
+    String purchaseDate;
+    String disposalDate;
+    boolean recycled;
+
+    public EWasteItem(String name, String category, String purchaseDate, String disposalDate, boolean recycled) {
+        this.name = name;
+        this.category = category;
+        this.purchaseDate = purchaseDate;
+        this.disposalDate = disposalDate;
+        this.recycled = recycled;
+    }
+}
+
+class EWasteMonitoringSystem {
+    private List<EWasteItem> items;
+
+    public EWasteMonitoringSystem() {
+        this.items = new ArrayList<>();
+    }
+
+    public void addItem(EWasteItem item) {
+        items.add(item);
+        System.out.println("Added " + item.name + " to the system.");
+    }
+
+    public void removeItem(String name) {
+        for (EWasteItem item : items) {
+            if (item.name.equals(name)) {
+                items.remove(item);
+                System.out.println("Removed " + name + " from the system.");
+                return;
+            }
+        }
+        System.out.println("Item " + name + " not found in the system.");
+    }
+
+    public void listItems() {
+        if (items.isEmpty()) {
+            System.out.println("No items in the system.");
+        } else {
+            for (EWasteItem item : items) {
+                System.out.printf("Name: %s, Category: %s, Purchase Date: %s, Disposal Date: %s, Recycled: %s%n",
+                        item.name, item.category, item.purchaseDate, item.disposalDate, item.recycled ? "Yes" : "No");
+            }
+        }
+    }
+
+    public void generateReport() {
+        int totalItems = items.size();
+        long recycledItems = items.stream().filter(item -> item.recycled).count();
+        double recyclingRate = totalItems > 0 ? (recycledItems * 100.0) / totalItems : 0;
+
+        System.out.println("\nE-Waste Monitoring Report");
+        System.out.println("Total Items: " + totalItems);
+        System.out.println("Recycled Items: " + recycledItems);
+        System.out.printf("Recycling Rate: %.2f%%%n", recyclingRate);
+    }
+}
+
+public class EWasteMonitoringApp {
+    public static void main(String[] args) {
+        EWasteMonitoringSystem system = new EWasteMonitoringSystem();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\nE-Waste Monitoring System");
+            System.out.println("1. Add Item");
+            System.out.println("2. Remove Item");
+            System.out.println("3. List Items");
+            System.out.println("4. Generate Report");
+            System.out.println("5. Exit");
+
+            System.out.print("Enter your choice (1-5): ");
+            String choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    System.out.print("Enter item name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter item category: ");
+                    String category = scanner.nextLine();
+                    System.out.print("Enter purchase date (YYYY-MM-DD): ");
+                    String purchaseDate = scanner.nextLine();
+                    System.out.print("Enter disposal date (YYYY-MM-DD): ");
+                    String disposalDate = scanner.nextLine();
+                    System.out.print("Is the item recycled? (y/n): ");
+                    boolean recycled = scanner.nextLine().toLowerCase().equals("y");
+
+                    EWasteItem item = new EWasteItem(name, category, purchaseDate, disposalDate, recycled);
+                    system.addItem(item);
+                    break;
+
+                case "2":
+                    System.out.print("Enter item name to remove: ");
+                    String itemToRemove = scanner.nextLine();
+                    system.removeItem(itemToRemove);
+                    break;
+
+                case "3":
+                    system.listItems();
+                    break;
+
+                case "4":
+                    system.generateReport();
+                    break;
+
+                case "5":
+                    System.out.println("Thank you for using the E-Waste Monitoring System. Goodbye!");
+                    scanner.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
